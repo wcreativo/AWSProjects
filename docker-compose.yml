@@ -7,7 +7,13 @@ services:
     container_name: helloproject-backend
     restart: unless-stopped
     environment:
-      - DEBUG=False
+      - DJANGO_SETTINGS_MODULE=core.settings.production
+      - SECRET_KEY=th0shf!+4+30)gx@!krmmn5k52_g3nfdwxr_is@0uxe-ou$$!+
+      - DB_NAME=helloproject_db
+      - DB_USER=helloproject_user
+      - DB_PASSWORD=helloproject_password
+      - DB_HOST=postgres
+      - DB_PORT=5432
     volumes:
       - ./HelloProject/backend:/app
     networks:
@@ -53,6 +59,26 @@ services:
       - helloproject-nginx
     networks:
       - main-network
+
+  # Shared PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: shared-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=lcw)lir^k7in0bsz0181zl_p)vwer=j1y@%5zz$wt8hywoi-q7
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - main-network
+
+volumes:
+  postgres_data:
 
 networks:
   helloproject-network:
