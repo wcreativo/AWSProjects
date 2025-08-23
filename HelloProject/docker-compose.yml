@@ -11,7 +11,6 @@ services:
       - ./backend:/app
     networks:
       - helloproject-network
-      - main-network
 
   frontend:
     build: ./frontend
@@ -36,10 +35,7 @@ services:
       - backend
     networks:
       - helloproject-network
-      - main-network
 
 networks:
   helloproject-network:
-    driver: bridge
-  main-network:
     driver: bridge
