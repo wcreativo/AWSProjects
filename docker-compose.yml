@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # HelloProject Services
+  helloproject-backend:
+    build: ./HelloProject/backend
+    container_name: helloproject-backend
+    restart: unless-stopped
+    environment:
+      - DEBUG=False
+    volumes:
+      - ./HelloProject/backend:/app
+    networks:
+      - helloproject-network
+      - main-network
+
+  helloproject-frontend:
+    build: ./HelloProject/frontend
+    container_name: helloproject-frontend
+    restart: unless-stopped
+    depends_on:
+      - helloproject-backend
+    networks:
+      - helloproject-network
+
+  helloproject-nginx:
+    image: nginx:alpine
+    container_name: helloproject-nginx
+    restart: unless-stopped
+    volumes:
+      - ./HelloProject/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./HelloProject/nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - helloproject-frontend
+      - helloproject-backend
+    networks:
+      - helloproject-network
+      - main-network
+
+  # Main Nginx Reverse Proxy
+  main-nginx:
+    image: nginx:alpine
+    container_name: main-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - helloproject-nginx
+    networks:
+      - main-network
+
+networks:
+  helloproject-network:
+    driver: bridge
+  main-network:
+    driver: bridge
