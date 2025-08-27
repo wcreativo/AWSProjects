@@ -74,6 +74,23 @@ services:
       - main-network
     # No command specified - will be run manually via docker-compose run
 
+  # Init container to create certbot directories
+  certbot-init:
+    image: alpine:latest
+    container_name: certbot-init
+    restart: "no"
+    volumes:
+      - certbot_www:/var/www/certbot
+    command: >
+      sh -c "
+        echo 'Creating certbot directories...' &&
+        mkdir -p /var/www/certbot/.well-known/acme-challenge &&
+        chmod -R 755 /var/www/certbot &&
+        echo 'Certbot directories created successfully!'
+      "
+    depends_on:
+      - main-nginx
+
   # Shared PostgreSQL Database
   postgres:
     image: postgres:15-alpine

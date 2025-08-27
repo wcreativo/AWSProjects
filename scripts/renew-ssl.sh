@@ -7,7 +7,7 @@ echo "🔄 Renovando certificados SSL..."
 
 # Renovar todos los certificados que estén próximos a vencer usando Docker directo
 docker run --rm \
-    --network awsprojects_main-network \
+    --network applications_main-network \
     -v awsprojects_certbot_conf:/etc/letsencrypt \
     -v awsprojects_certbot_www:/var/www/certbot \
     certbot/certbot renew
