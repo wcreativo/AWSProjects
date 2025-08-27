@@ -6,8 +6,8 @@ A professional multi-tenant DevOps solution featuring independent full-stack app
 
 This project implements a **multi-tenant architecture** where multiple independent applications share the same infrastructure while maintaining complete isolation. Each project has its own backend (Django Ninja), frontend (React), and internal nginx configuration, all orchestrated through a main nginx reverse proxy.
 
-### Live Projects:
-- **HelloProject** - Production: `https://maialejandra.com`
+### Example Projects:
+- **HelloProject** - Example: `https://your-domain.com`
 - **Future Projects** - Easily add new projects with independent domains
 
 ### Key Features:
@@ -105,7 +105,25 @@ AWSProjects/
    cd AWSProjects
    ```
 
-2. **Run complete multi-tenant environment**
+2. **Configure environment variables**
+   ```bash
+   # Copy environment templates
+   cp .env.example .env
+   cp HelloProject/backend/.env.example HelloProject/backend/.env
+   
+   # Edit .env files with your configuration
+   nano .env
+   nano HelloProject/backend/.env
+   ```
+
+3. **Update domain configuration**
+   ```bash
+   # Update nginx configuration files with your domain
+   # Edit nginx/conf.d/default.conf
+   # Replace maialejandra.com with your domain
+   ```
+
+4. **Run complete multi-tenant environment**
    ```bash
    docker-compose up --build
    ```
@@ -183,8 +201,8 @@ React development server with proxy configuration in `package.json`:
    ```
 
 3. **Configure DNS**
-   - Point `maialejandra.com` to your EC2 public IP
-   - Point `embyter.com` to your EC2 public IP
+   - Point your domain to your EC2 public IP
+   - Update nginx configuration with your domain names
 
 ### CloudFormation Stack
 
