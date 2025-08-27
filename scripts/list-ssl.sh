@@ -5,7 +5,10 @@
 echo "📋 Certificados SSL instalados:"
 echo "================================"
 
-docker-compose run --rm certbot certificates
+# Listar certificados usando Docker directo
+docker run --rm \
+    -v awsprojects_certbot_conf:/etc/letsencrypt \
+    certbot/certbot certificates
 
 echo ""
 echo "💡 Comandos útiles:"

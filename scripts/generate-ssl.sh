@@ -15,8 +15,12 @@ EMAIL=$2
 echo "Generando certificado SSL para: $DOMAIN"
 echo "Email de contacto: $EMAIL"
 
-# Generar certificado
-docker-compose run --rm certbot certonly \
+# Generar certificado usando Docker directo
+docker run --rm \
+    --network awsprojects_main-network \
+    -v awsprojects_certbot_conf:/etc/letsencrypt \
+    -v awsprojects_certbot_www:/var/www/certbot \
+    certbot/certbot certonly \
     --webroot \
     -w /var/www/certbot \
     --email $EMAIL \
@@ -26,8 +30,21 @@ docker-compose run --rm certbot certonly \
 
 if [ $? -eq 0 ]; then
     echo "✅ Certificado generado exitosamente para $DOMAIN"
-    echo "📝 Recuerda actualizar tu configuración nginx para usar HTTPS"
-    echo "🔄 Reinicia nginx: docker-compose restart main-nginx"
+    
+    # Cambiar automáticamente a configuración SSL
+    echo "🔄 Activando configuración HTTPS..."
+    cp nginx/conf.d/default-ssl.conf.template nginx/conf.d/default.conf
+    
+    # Reiniciar nginx con SSL usando Docker directo
+    echo "🔄 Reiniciando nginx con SSL..."
+    docker restart main-nginx
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ ¡SSL activado exitosamente!"
+        echo "🌐 Tu sitio está disponible en: https://$DOMAIN"
+    else
+        echo "❌ Error reiniciando nginx. Revisa la configuración SSL."
+    fi
 else
     echo "❌ Error generando certificado para $DOMAIN"
     echo "🔍 Verifica que:"

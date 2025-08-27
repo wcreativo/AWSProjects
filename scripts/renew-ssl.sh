@@ -5,13 +5,17 @@
 
 echo "🔄 Renovando certificados SSL..."
 
-# Renovar todos los certificados que estén próximos a vencer
-docker-compose run --rm certbot renew
+# Renovar todos los certificados que estén próximos a vencer usando Docker directo
+docker run --rm \
+    --network awsprojects_main-network \
+    -v awsprojects_certbot_conf:/etc/letsencrypt \
+    -v awsprojects_certbot_www:/var/www/certbot \
+    certbot/certbot renew
 
 if [ $? -eq 0 ]; then
     echo "✅ Certificados renovados exitosamente"
     echo "🔄 Reiniciando nginx para aplicar cambios..."
-    docker-compose restart main-nginx
+    docker restart main-nginx
     echo "✅ Nginx reiniciado"
 else
     echo "❌ Error renovando certificados"
