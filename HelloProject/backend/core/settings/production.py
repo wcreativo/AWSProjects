@@ -19,15 +19,22 @@ ALLOWED_HOSTS = [
     # Add your production domains here
 ]
 
-# Database - Use environment variables for production
+# Database - Use environment variables for production (all required)
+def get_required_env(var_name):
+    """Get required environment variable or raise error"""
+    value = os.getenv(var_name)
+    if not value:
+        raise ValueError(f'{var_name} environment variable is required in production')
+    return value
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'helloproject_db'),
-        'USER': os.getenv('DB_USER', 'helloproject_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST', 'postgres'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+        'NAME': get_required_env('DB_NAME'),
+        'USER': get_required_env('DB_USER'),
+        'PASSWORD': get_required_env('DB_PASSWORD'),
+        'HOST': get_required_env('DB_HOST'),
+        'PORT': get_required_env('DB_PORT'),
     }
 }
 
