@@ -7,7 +7,7 @@ echo "================================"
 
 # Listar certificados usando Docker directo
 docker run --rm \
-    -v awsprojects_certbot_conf:/etc/letsencrypt \
+    -v applications_certbot_conf:/etc/letsencrypt \
     certbot/certbot certificates
 
 echo ""

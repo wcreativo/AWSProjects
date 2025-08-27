@@ -18,8 +18,8 @@ echo "Email de contacto: $EMAIL"
 # Generar certificado usando Docker directo
 docker run --rm \
     --network applications_main-network \
-    -v awsprojects_certbot_conf:/etc/letsencrypt \
-    -v awsprojects_certbot_www:/var/www/certbot \
+    -v applications_certbot_conf:/etc/letsencrypt \
+    -v $(pwd)/certbot/www:/var/www/certbot \
     certbot/certbot certonly \
     --webroot \
     -w /var/www/certbot \

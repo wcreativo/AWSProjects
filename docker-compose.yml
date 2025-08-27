@@ -55,7 +55,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - certbot_conf:/etc/letsencrypt:ro
-      - certbot_www:/var/www/certbot:ro
+      - ./certbot/www:/var/www/certbot:ro
     depends_on:
       - helloproject-nginx
     networks:
@@ -68,28 +68,29 @@ services:
     restart: "no"  # Don't auto-restart, run on-demand only
     volumes:
       - certbot_conf:/etc/letsencrypt
-      - certbot_www:/var/www/certbot
+      - ./certbot/www:/var/www/certbot
       - ./scripts:/scripts:ro
     networks:
       - main-network
     # No command specified - will be run manually via docker-compose run
 
-  # Init container to create certbot directories
+  # Initialize certbot directory structure
   certbot-init:
     image: alpine:latest
     container_name: certbot-init
     restart: "no"
     volumes:
-      - certbot_www:/var/www/certbot
+      - ./certbot/www:/var/www/certbot
     command: >
       sh -c "
-        echo 'Creating certbot directories...' &&
+        echo 'Creating certbot directory structure...' &&
         mkdir -p /var/www/certbot/.well-known/acme-challenge &&
         chmod -R 755 /var/www/certbot &&
-        echo 'Certbot directories created successfully!'
+        echo 'test-file' > /var/www/certbot/.well-known/acme-challenge/test &&
+        echo 'Certbot directories ready for SSL validation!'
       "
-    depends_on:
-      - main-nginx
+
+
 
   # Shared PostgreSQL Database
   postgres:
@@ -111,7 +112,6 @@ services:
 volumes:
   postgres_data:
   certbot_conf:
-  certbot_www:
 
 networks:
   helloproject-network:
