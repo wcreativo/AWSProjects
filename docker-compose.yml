@@ -54,12 +54,25 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./certbot/conf:/etc/letsencrypt:ro
-      - ./certbot/www:/var/www/certbot:ro
+      - certbot_conf:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
     depends_on:
       - helloproject-nginx
     networks:
       - main-network
+
+  # Certbot for SSL Certificate Management
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    restart: "no"  # Don't auto-restart, run on-demand only
+    volumes:
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+      - ./scripts:/scripts:ro
+    networks:
+      - main-network
+    # No command specified - will be run manually via docker-compose run
 
   # Shared PostgreSQL Database
   postgres:
@@ -80,6 +93,8 @@ services:
 
 volumes:
   postgres_data:
+  certbot_conf:
+  certbot_www:
 
 networks:
   helloproject-network:
