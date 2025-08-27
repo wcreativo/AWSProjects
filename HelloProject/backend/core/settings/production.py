@@ -16,6 +16,9 @@ if not SECRET_KEY:
 ALLOWED_HOSTS = [
     'maialejandra.com',
     'www.maialejandra.com',
+    'helloproject-backend',  # Allow internal Docker communication
+    'localhost',             # Allow localhost access
+    '127.0.0.1',            # Allow local IP access
     # Add your production domains here
 ]
 
@@ -42,6 +45,8 @@ DATABASES = {
 CORS_ALLOWED_ORIGINS = [
     "https://maialejandra.com",
     "https://www.maialejandra.com",
+    "http://helloproject-frontend:3000",  # Allow internal Docker communication
+    "http://localhost:3000",              # Allow local development
 ]
 CORS_ALLOW_CREDENTIALS = True
 
