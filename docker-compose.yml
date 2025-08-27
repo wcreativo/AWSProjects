@@ -83,7 +83,7 @@ services:
   certbot-init:
     image: alpine:latest
     container_name: certbot-init
-    restart: "no"
+    restart: unless-stopped
     volumes:
       - ./certbot/www:/var/www/certbot
     command: >
@@ -92,7 +92,9 @@ services:
         mkdir -p /var/www/certbot/.well-known/acme-challenge &&
         chmod -R 755 /var/www/certbot &&
         echo 'test-file' > /var/www/certbot/.well-known/acme-challenge/test &&
-        echo 'Certbot directories ready for SSL validation!'
+        echo 'Certbot directories ready for SSL validation!' &&
+        echo 'Initialization complete. Keeping container alive...' &&
+        tail -f /dev/null
       "
 
 
