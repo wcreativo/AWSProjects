@@ -33,7 +33,7 @@ if [ $? -eq 0 ]; then
     
     # Cambiar automáticamente a configuración SSL
     echo "🔄 Activando configuración HTTPS..."
-    cp nginx/conf.d/default-ssl.conf.template nginx/conf.d/default.conf
+    cp nginx/conf.d/default-ssl.template nginx/conf.d/default.conf
     
     # Reiniciar nginx con SSL usando Docker directo
     echo "🔄 Reiniciando nginx con SSL..."
