@@ -59,7 +59,8 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
 # SSL settings (now using HTTPS)
-SECURE_SSL_REDIRECT = True
+# Disable SSL redirect for internal Docker communication
+SECURE_SSL_REDIRECT = False  # Let nginx handle SSL termination
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
