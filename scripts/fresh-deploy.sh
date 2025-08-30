@@ -62,11 +62,11 @@ if [ $? -eq 0 ]; then
     if [ ! -z "$PUBLIC_IP" ]; then
         echo -e "\n${BLUE}📱 Your applications are now available at:${NC}"
         echo -e "${GREEN}   • HelloProject (maialejandra.com): http://$PUBLIC_IP${NC}"
-        echo -e "${GREEN}   • WorldProject (embyter.com): http://$PUBLIC_IP:8001${NC}"
+        echo -e "${GREEN}   • EscapeRooms (escaperooms21.com): http://$PUBLIC_IP${NC}"
         echo -e "\n${YELLOW}📝 DNS Configuration:${NC}"
         echo -e "${BLUE}   Point your domains to: $PUBLIC_IP${NC}"
         echo -e "${BLUE}   • maialejandra.com → $PUBLIC_IP${NC}"
-        echo -e "${BLUE}   • embyter.com → $PUBLIC_IP${NC}"
+        echo -e "${BLUE}   • escaperooms21.com → $PUBLIC_IP${NC}"
     fi
     
     echo -e "\n${YELLOW}🔍 Run './scripts/diagnose.sh' to verify everything is working${NC}"

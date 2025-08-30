@@ -94,12 +94,17 @@ if [ $? -eq 0 ]; then
     
     # Create a temporary deployment package
     tar -czf deployment.tar.gz \
-        --exclude='.git' \
+        --exclude='*/.git' \
         --exclude='node_modules' \
         --exclude='__pycache__' \
         --exclude='*.pyc' \
         --exclude='venv' \
-        ../HelloProject ../docker-compose.yml ../nginx ../scripts
+        --exclude='*.log' \
+        --exclude='*/.env' \
+        --exclude='._*' \
+        --exclude='.DS_Store' \
+        --exclude='Thumbs.db' \
+        ../HelloProject ../EscapeRooms ../docker-compose.yml ../nginx ../scripts ../.env.helloproject ../.env.escaperooms
     
     # Copy files to server
     echo -e "${BLUE}📦 Copying application files to instance...${NC}"
@@ -132,6 +137,11 @@ EOF
     echo -e "${GREEN}🎉 Deployment completed successfully!${NC}"
     echo -e "${BLUE}📱 Your applications are now available at:${NC}"
     echo -e "${GREEN}   • HelloProject: http://$PUBLIC_IP (maialejandra.com)${NC}"
+    echo -e "${GREEN}   • EscapeRooms: http://$PUBLIC_IP (escaperooms21.com)${NC}"
+    echo -e "${YELLOW}📝 DNS Configuration needed:${NC}"
+    echo -e "${BLUE}   Point your domains to: $PUBLIC_IP${NC}"
+    echo -e "${BLUE}   • maialejandra.com → $PUBLIC_IP${NC}"
+    echo -e "${BLUE}   • escaperooms21.com → $PUBLIC_IP${NC}"
     
 else
     echo -e "${RED}❌ CloudFormation deployment failed!${NC}"

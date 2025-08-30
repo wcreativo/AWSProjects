@@ -1,6 +1,31 @@
 # Configuración temporal para generación de certificados SSL
 # Esta configuración permite que certbot use el puerto 80
 
+# EscapeRooms - escaperooms21.com
+server {
+    listen 80;
+    server_name escaperooms21.com www.escaperooms21.com;
+    
+    # Certbot challenge location
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+    
+    # Serve the application over HTTP (temporary for certbot)
+    location / {
+        proxy_pass http://escaperooms;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # WebSocket support
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+
 # HelloProject - maialejandra.com
 server {
     listen 80;

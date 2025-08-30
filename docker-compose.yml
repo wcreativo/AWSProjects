@@ -6,19 +6,8 @@ services:
     build: ./HelloProject/backend
     container_name: helloproject-backend
     restart: unless-stopped
-    environment:
-      - DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
-      - SECRET_KEY=${SECRET_KEY}
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_PORT=${EMAIL_PORT}
-      - EMAIL_HOST_USER=${EMAIL_HOST_USER}
-      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
-      - DEFAULT_FROM_EMAIL=${DEFAULT_FROM_EMAIL}
+    env_file:
+      - .env.helloproject
     volumes:
       - ./HelloProject/backend:/app
     networks:
@@ -48,6 +37,50 @@ services:
       - helloproject-network
       - main-network
 
+  # EscapeRooms
+  escaperooms-backend:
+    build:
+      context: ./EscapeRooms/backend
+      dockerfile: Dockerfile
+    container_name: escaperooms-backend
+    restart: unless-stopped
+    env_file:
+      - .env.escaperooms
+    volumes:
+      - ./EscapeRooms/backend/logs:/app/logs
+      - escaperooms_static:/app/staticfiles
+    networks:
+      - escape_rooms_network
+      - main-network
+
+  escaperooms-frontend:
+    build:
+      context: ./EscapeRooms/frontend
+      dockerfile: Dockerfile
+    env_file:
+      - .env.escaperooms
+    container_name: escaperooms-frontend
+    restart: unless-stopped
+    depends_on:
+      - escaperooms-backend
+    networks:
+      - escape_rooms_network
+
+  escaperooms-nginx:
+    image: nginx:alpine
+    container_name: escaperooms-nginx
+    restart: unless-stopped
+    volumes:
+      - ./EscapeRooms/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./EscapeRooms/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certbot/www:/var/www/certbot:ro
+    depends_on:
+      - escaperooms-frontend
+      - escaperooms-backend
+    networks:
+      - escape_rooms_network
+      - main-network
+
   # Main Nginx Reverse Proxy
   main-nginx:
     image: nginx:alpine
@@ -63,6 +96,7 @@ services:
       - ./certbot/www:/var/www/certbot:ro
     depends_on:
       - helloproject-nginx
+      - escaperooms-nginx
     networks:
       - main-network
 
@@ -97,17 +131,13 @@ services:
         tail -f /dev/null
       "
 
-
-
   # Shared PostgreSQL Database
   postgres:
     image: postgres:15-alpine
     container_name: shared-postgres
     restart: unless-stopped
-    environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    env_file:
+      - .env.helloproject
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d
@@ -119,9 +149,12 @@ services:
 volumes:
   postgres_data:
   certbot_conf:
+  escaperooms_static:
 
 networks:
   helloproject-network:
+    driver: bridge
+  escape_rooms_network:
     driver: bridge
   main-network:
     driver: bridge

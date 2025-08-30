@@ -133,3 +133,5 @@ tmp/
 temp/
 
 EscapeRooms/
+.env.helloproject
+.env.escaperooms
