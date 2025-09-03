@@ -97,6 +97,7 @@ services:
     depends_on:
       - helloproject-nginx
       - escaperooms-nginx
+      - gemotorsports-nginx
     networks:
       - main-network
 
